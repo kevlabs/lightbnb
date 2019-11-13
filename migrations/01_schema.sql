@@ -17,7 +17,7 @@ CREATE TABLE properties (
   id SERIAL PRIMARY KEY,
   owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title VARCHAR(255) NOT NULL,
-  description TEXT NOT NULL,
+  description TEXT,
   thumbnail_photo_url VARCHAR(255) NOT NULL,
   cover_photo_url VARCHAR(255) NOT NULL,
   cost_per_night INTEGER NOT NULL,
@@ -54,8 +54,8 @@ CREATE TABLE property_reviews (
   guest_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   reservation_id INTEGER NOT NULL REFERENCES reservations(id) ON DELETE CASCADE,
   property_id INTEGER NOT NULL REFERENCES properties(id) ON DELETE CASCADE,
-  rating INTEGER NOT NULL,
-  message TEXT NOT NULL
+  rating SMALLINT NOT NULL,
+  message TEXT
 );
 
 CREATE TABLE guest_reviews (
@@ -63,6 +63,6 @@ CREATE TABLE guest_reviews (
   guest_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   owner_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   reservation_id INTEGER NOT NULL REFERENCES reservations(id) ON DELETE CASCADE,
-  rating INTEGER NOT NULL,
-  message TEXT NOT NULL
+  rating SMALLINT NOT NULL,
+  message TEXT
 );

@@ -27,7 +27,7 @@ CREATE TABLE properties (
   number_of_bedrooms SMALLINT NOT NULL DEFAULT 0,
   country VARCHAR(255) NOT NULL,
   city VARCHAR(255) NOT NULL,
-  province CHAR(2) NOT NULL,
+  province VARCHAR(255) NOT NULL,
   post_code VARCHAR(255) NOT NULL,
   active BOOLEAN NOT NULL DEFAULT true
 );

@@ -7,6 +7,11 @@ $(() => {
   `);
   window.$propertyListings = $propertyListings;
 
+  $propertyListings.on('click', 'button', function() {
+    console.log( $(this).data('property-id') );
+    window.reservationForm.attach(document.body, $(this).data('property-id'));
+  });
+
   window.propertyListings = {};
 
   function addListing(listing) {

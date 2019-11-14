@@ -87,6 +87,29 @@ const getAllReservations = function(guestId, limit = 10) {
 };
 exports.getAllReservations = getAllReservations;
 
+/**
+ * Add a reservation to the database
+ * @param {{}} reservation An object containing all of the reservation details.
+ * @return {Promise<{}>} A promise to the reservation.
+ */
+const addReservation = function(reservation) {
+  console.log(reservation);
+
+  const keys = Object.keys(reservation);
+
+  return db.query(`
+    INSERT INTO reservations (${keys.join(', ')})
+    VALUES (${keys.map((_, i) => '$' + (i + 1)).join(', ')})
+    RETURNING *;
+  `, keys.map(key => reservation[key]))
+    .then(data => {
+      console.log(data.rows);
+      return data;
+    })
+    .then(data => data.rows[0]);
+};
+exports.addReservation = addReservation;
+
 /// Properties
 
 /**

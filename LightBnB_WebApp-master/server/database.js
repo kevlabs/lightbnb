@@ -3,13 +3,18 @@ const users = require('./json/users.json');
 
 const { Pool } = require('pg');
 
-// instantiate pool connection
-const db = new Pool({
+// instantiate pool
+const pool = new Pool({
   user: 'vagrant',
   password: '123',
   host: 'localhost',
   database: 'lightbnb'
 });
+
+const db = {
+  query: (...args) => pool.query(...args)
+};
+
 
 /// Users
 
@@ -108,9 +113,9 @@ const getAllProperties = function(options, limit = 10) {
     whereFilter.push(`p.city ILIKE $${allFilterParams.length + 1}`);
     allFilterParams.push(`%${city}%`);
   }
-  if (owner_id) {
+  if (owner_id = Number(owner_id)) {
     whereFilter.push(`p.owner_id = $${allFilterParams.length + 1}`);
-    allFilterParams.push(`%${owner_id}%`);
+    allFilterParams.push(owner_id);
   }
   if (minimum_price_per_night = Number(minimum_price_per_night)) {
     whereFilter.push(`p.cost_per_night >= $${allFilterParams.length + 1}`);
@@ -133,11 +138,10 @@ const getAllProperties = function(options, limit = 10) {
   
   const havingFilterString = havingFilter.length ? 'HAVING ' + havingFilter.join(' AND ') : '';
   
-
   return db.query(`
     SELECT p.*, avg(pr.rating) as average_rating
     FROM properties p
-    JOIN property_reviews pr ON p.id = pr.property_id
+    LEFT JOIN property_reviews pr ON p.id = pr.property_id
     ${whereFilterString}
     GROUP BY p.id
     ${havingFilterString}

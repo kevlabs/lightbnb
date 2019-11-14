@@ -67,9 +67,19 @@ exports.addUser = addUser;
  * @param {string} guest_id The id of the user.
  * @return {Promise<[{}]>} A promise to the reservations.
  */
-const getAllReservations = function(guest_id, limit = 10) {
-  return getAllProperties(null, 2);
-}
+const getAllReservations = function(guestId, limit = 10) {
+  return db.query(`
+    SELECT p.*, r.*, avg(pr.rating) as average_rating
+    FROM users u
+    JOIN reservations r ON r.guest_id = u.id
+    JOIN properties p ON r.property_id = p.id
+    JOIN property_reviews pr ON p.id = pr.property_id
+    WHERE u.id = $1 AND r.end_date < now()::date
+    GROUP BY p.id, r.id
+    ORDER BY r.start_date DESC LIMIT $2;
+  `, [guestId, limit])
+    .then(data => data.rows);
+};
 exports.getAllReservations = getAllReservations;
 
 /// Properties
